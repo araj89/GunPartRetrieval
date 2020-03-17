@@ -3,14 +3,6 @@ import pickle
 
 # Create your models here.
 
-"""
-class ImageData(models.Model):
-    name = models.CharField(max_length=256)
-    rate = models.FloatField()
-    orig_img = models.BinaryField()
-    norm_img = models.BinaryField()
-    cont_img = models.TextField()
-"""
 
 
 
