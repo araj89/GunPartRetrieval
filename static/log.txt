@@ -1,0 +1,30 @@
+2019-12-14 18:32:57.422883
+------------Converting the images to dataset finished!!! ------------------
+
+
+removed from database : 16
+Total files to convert: 12076 
+Number of Success : 12076 
+Number of Image process failed : 0 
+
+Number of fils that does not image : 0 
+ 
+Number of database save failed : 0 
+ 
+
+
+2020-02-14 10:53:12.268659
+------------Converting the images to dataset finished!!! ------------------
+
+
+removed from database : 12078
+Total files to convert: 3019 
+Number of Success : 3019 
+Number of Image process failed : 0 
+
+Number of fils that does not image : 0 
+ 
+Number of database save failed : 0 
+ 
+
+

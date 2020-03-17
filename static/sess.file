@@ -1,0 +1,13 @@
+#BackupInterval#
+0
+#BackupTime#
+ 10.52
+#BackupPeriod#
+100
+#SaveDirectory#
+E:/cur_work/image_retrieval/shapematching/res-img2
+#CaptureImageDirectory#
+E:/cur_work/image_retrieval/shapematching/new2
+#BackupDirectory#
+E:/cur_work/image_retrieval/shapematching/test/1
+

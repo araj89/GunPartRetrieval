@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Retrieval</title>
+    <link rel="shortcut icon" href="{% static "ImageRetrieval/resized_logo.jpg" %}" type="image/x-icon">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="Stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static "ImageRetrieval/css/formodal.css" %}" rel="Stylesheet">
+    <script src = "{% static "ImageRetrieval/js/main.js" %}"></script>
+    <style>
+        button {
+            width:100%;
+        }
+
+        #myProgress {
+              width: 100%;
+              background-color: #ddd;
+        }
+        #myBar {
+              width: 1%;
+              height: 30px;
+              background-color: #4CAF50;
+        }
+        .imgNamClass {
+            text-align: center;
+            bottom: 0px;
+            position: absolute;
+            width: 100%;
+        }
+
+        .imgHoverClass:hover{
+            border: 1px solid;
+            border-color: red;
+        }
+
+        .slidecontainer {
+          width: 100%;
+        }
+
+        .slider {
+          -webkit-appearance: none;
+          width: 100%;
+          height: 25px;
+          background: #d3d3d3;
+          outline: none;
+          opacity: 0.7;
+          -webkit-transition: .2s;
+          transition: opacity .2s;
+        }
+
+        .slider:hover {
+          opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 25px;
+          height: 25px;
+          background: #4CAF50;
+          cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+          width: 25px;
+          height: 25px;
+          background: #4CAF50;
+          cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-content" style="width:98%; margin-left:1%; ">
+        <div class="row">
+            <div style="width: 100%;text-align: center;">
+                <img style="height: 85px;" src="{% static "ImageRetrieval/logo.png" %}">
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px; padding-top:10px; border-top:2px solid #aaa;">
+            <div class="col-md-3">
+                <!-----------------------------------------------Templates ------------------------------------------>
+                <div class="row" style="margin-right:0px; margin-left:0px;">
+                    <div class="col-md-12" style="padding:5px 0px; background-color: #dbe3d7;">
+                        <span style="font-size: 23px; margin-left: 5px;">Templates</span>
+                        <div class="row" style="margin-left:0px; margin-right:0px; margin-top: 5px;">
+                            <div class="col-md-3" style="padding-left:5px; padding-right:5px">
+                                <button class="btn btn-primary" style="padding-left:7px;" onclick="tmpl_save()">Save</button>
+                            </div>
+                            <div class="col-md-3" style="padding-left:5px; padding-right:5px">
+                                <button class="btn btn-primary" style="padding-left:7px;" onclick="tmpl_load()">Load</button>
+                            </div>
+                            <div class="col-md-4" style="padding-left:5px; padding-right:5px">
+                                <input type="text" id="tmpl-title" style="width:100%; height:100%;">
+                            </div>
+                            <div class="col-md-2" style="padding-left:5px; padding-right:5px">
+                                <button class="btn btn-primary" style="padding-left:7px;"
+                                        data-target="#userRegisterModal" data-toggle="modal" onclick="tmpl_open()">...</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-------------------------------------------- Save directory ------------------------------------>
+                <div class="row" style="margin-right:0px; margin-left:0px; margin-top: 15px;">
+                    <div class="col-md-12" style="padding:5px 0px; background-color: #dbe3d7;">
+                        <span style="font-size: 23px; margin-left: 5px;">Save directory</span>
+                        <div class="row" style="margin-left:20px; margin-right:0px; margin-top: 5px;">
+                            <div class = "col-md-12">
+                                <input type = "text" style="width: 100%;" id = "save-repo" disabled value="{{ save_directory }}">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-------------------------------------------- Search Method ------------------------------------>
+                <div class="row" style="margin-right:0px; margin-left:0px; margin-top: 15px;">
+                    <div class="col-md-12" style="padding:5px 0px; background-color: #dbe3d7;">
+                        <span style="font-size: 23px; margin-left: 5px;">Search method</span>
+                        <div class="row" style="margin-left:20px; margin-right:0px; margin-top: 1px;">
+                            <div class = "col-md-12">
+                                <input type = "radio" id = "method0" name = "smethod" value = "0"> Contour Search<br>
+                                <input type = "radio" id = "method1" name = "smethod" value = "1" checked="checked"> Area Search<br>
+                                <!--<input type = "radio" id = "method2" name = "smethod" value = "2"> Combined Search<br> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!----------------------------------------------- Parameters -------------------------------->
+                <div class="row" style="margin-right:0px; margin-left:0px; margin-top: 15px;">
+                    <div class="col-md-12" style="padding:5px 0px; background-color: #dbe3d7;">
+                        <span style="font-size: 23px; margin-left: 5px;">Parameters</span>
+                        <div class="row" style="margin-left:0px; margin-right:0px; margin-top: 1px;">
+                            <div class="col-md-12" style="padding-left:5px; padding-right:5px">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <span style="padding-left:7px;">Scale range</span>
+                                    </div>
+                                    <div class="col-md-5" style = "padding-right: 0px;">
+                                        <div class="slidecontainer">
+                                          <input type="range" min="1" max="100" class="slider" id = "min_rate" value="{{ min_rate }}">
+                                          <p>Value: <span id="rate_val"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left:0px; margin-right:0px; margin-top: 1px;">
+                            <div class="col-md-12" style="padding-left:5px; padding-right:5px">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <span style="padding-left:7px;">Result numbers</span>
+                                    </div>
+                                    <div class="col-md-5" style = "padding-right: 0px;">
+                                        <input type="text" style="width:100%; height:100%;" id = "nres" value="{{ nres }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-------------------------------------------- Buttons ------------------------------------>
+                <div class="row" style="margin-right:0px; margin-left:0px; margin-top: 15px;">
+                    <div class="col-md-12" style="padding:5px 0px; background-color: #dbe3d7;">
+                        <div style="margin-top:10px; margin-left: 5px; margin-right: 5px;">
+                            <button id = "camera_btn" class="btn btn-primary" onclick="Camera()">Camera View</button>
+                        </div>
+                        <div style="margin-top:10px; margin-left: 5px; margin-right: 5px;">
+                            <button id = "capture_btn" class="btn btn-primary" onclick="Capture()">Capture</button>
+                        </div>
+                        <div style="margin-top:10px; margin-left: 5px; margin-right: 5px;">
+                            <button id = "search_btn" class="btn btn-primary" onclick="Search()">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <!----------------------------------------------  Store Captured image-------------------------------------------->
+                <div class="row" style="margin-right:0px; margin-left:0px; margin-top: 15px;">
+                    <div class="col-md-12" style="padding:5px 0px; background-color: #dbe3d7;">
+                        <span style="font-size: 23px; margin-left: 5px;">Store captured image to database</span>
+                        <div class="row" style="margin-left:0px; margin-right:0px; margin-top: 5px;">
+                            <div class="col-md-12" style="padding-left:5px; padding-right:5px">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <span style="padding-left:7px;">SKU</span>
+                                    </div>
+                                    <div class="col-md-10" style = "padding-right: 0px;">
+                                        <input type="text" style="width: 93%;height: 100%;margin-left: 7%;" id = "capture-name" value="{{ search_path1 }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left:0px; margin-right:0px; margin-top: 5px;">
+                            <div class="col-md-12" style="padding-left:5px; padding-right:5px">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <span style="padding-left:7px;">Path</span>
+                                    </div>
+                                    <div class="col-md-10" style = "padding-right: 0px;">
+                                        <input type="text" style="width: 93%;height: 100%;margin-left: 7%;" id = "capture-path" disabled value="{{ capture_directory }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left:0px; margin-right:0px; margin-top: 5px;">
+                            <div class="col-md-12" style="padding-left:5px; padding-right:5px">
+                                <div class="row">
+                                    <div style="margin:auto;">
+                                        <button id = "store_capimage_btn" class="btn btn-primary" onclick="StoreCapImageToDataset()">Store Image</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-----------------------------------------------Convert directory------------------------------------------>
+                <!--<div class="row" style="margin-right:0px; margin-left:0px; margin-top: 5px;">
+                    <div class="col-md-12" style="padding:5px 0px; background-color: #dbe3d7;">
+                        <span style="font-size: 23px; margin-left: 5px;">Convert directories to database</span>
+                        <div class="row" style="margin-left:0px; margin-right:0px; margin-top: 5px;">
+                            <div class="col-md-12" style="padding-left:5px; padding-right:5px">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <input type="checkbox" style="padding-left:7px;" id="check-repo1">
+                                    </div>
+                                    <div class="col-md-10" style = "padding-right: 0px;">
+                                        <input type="text" style="width:100%; height:100%;" id = "image-repo1" value="{{ search_path1 }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left:0px; margin-right:0px; margin-top: 5px;">
+                            <div class="col-md-12" style="padding-left:5px; padding-right:5px">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <input type="checkbox" style="padding-left:7px;" id="check-repo2">
+                                    </div>
+                                    <div class="col-md-10" style = "padding-right: 0px;">
+                                        <input type="text" style="width:100%; height:100%;" id = "image-repo2" value="{{ search_path2 }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left:0px; margin-right:0px; margin-top: 5px;">
+                            <div class="col-md-12" style="padding-left:5px; padding-right:5px">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <input type="checkbox" style="padding-left:7px;" id="check-repo3">
+                                    </div>
+                                    <div class="col-md-10" style = "padding-right: 0px;">
+                                        <input type="text" style="width:100%; height:100%;" id = "image-repo3" value="{{ search_path3 }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left:0px; margin-right:0px; margin-top: 5px;">
+                            <div class="col-md-12" style="padding-left:5px; padding-right:5px">
+                                <div class="row">
+                                    <div style="margin:auto;">
+                                        <button id = "store_directory_btn" class="btn btn-primary" onclick="StoreDirectoryToDataset()">Convert</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+            <!----------------------------------------------------Camera views---------------------------------------------------------->
+            <div class="col-md-4">
+                <div>
+                    <img id = "previewimg" src = "/video_feed" width="100%">
+                </div>
+                <div><label for="myProgress">Processing Statue</label></div>
+                <div id="myProgress">
+                    <div id="myBar"></div>
+                </div>
+                <div id="result-text">
+                </div>
+            </div>
+            <!----------------------------------------------------Result views---------------------------------------------------------->
+            <div class="col-md-5">
+                <div class="slidecontainer">
+                    <span>Result filter</span>
+                  <input type="range" min="1" max="100" class="slider" id = "res_filter" value="{{ res_filter }}">
+                </div>
+                <div id="searched-imgs" class="row" style="max-height:800px; overflow-y:scroll">
+                    <!--<div style="text-align: center; margin-top: 100px"><h1>Please Search Images</h1></div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div id="userRegisterModal" class="modal modal-adminpro-general default-popup-PrimaryModal fade" role="dialog" style="color:#54595f;">
+    <div class="modal-dialog" style="width:100%; max-width:800px; font-size:16px;">
+        <div id = "modal-content" class="modal-content" style="text-align: center;">
+            <div class="modal-header header-color-modal star-back-color" style="height:50px; color:white;">
+
+            </div>
+            <div style="margin-top:15px;">
+                <section id = "modal-content2" class="content" style="width:96%; margin-left:2%;">
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button id="modal_ok" class="btn-primary" style="width: 100px;" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-2.2.0.js"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+<script>
+    function sliderSetting(minVal, maxVal) {
+        $("#slider").slider({
+            step: 1,
+            range: true,
+            min: minVal,
+            max: maxVal,
+            values: [ minVal, maxVal ],
+            slide: function( event, ui ) {
+                //$("#age_range").val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // admin config file get and setting
+        // var admin_data = JSON.parse(admin_config);
+        // setInterval(SetAdminConfig, 30000);
+
+        // sldier bar settings
+        var slider = document.getElementById("min_rate");
+        var output = document.getElementById("rate_val");
+        output.innerHTML = slider.value;
+        slider.oninput = function() {
+          output.innerHTML = this.value;
+        };
+
+        var slider2 = document.getElementById("res_filter");
+        slider2.value = '1';
+        slider2.oninput = function() {
+            slider_filter_val(this.value);
+            str_htm = MakeScripts(g_s, g_n, g_scores, g_scores2, g_files);
+            $("#searched-imgs").html(str_htm);
+        };
+
+        //sliderSetting(0, 100);
+        bCapture = false;
+        bTest = true;
+    });
+</script>
+
+</html>
+
+
