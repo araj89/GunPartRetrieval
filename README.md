@@ -4,7 +4,7 @@ A Content based image retrieval system(CBIR) that searches camera feed from exis
 ![UI](https://github.com/araj89/GunPartRetrieval/blob/master/UI.png)
 
 ## Packages
- - OpenCV 3.7
+ - OpenCV 4.2
  - Django Framework
  - Django Rest Framework
  - PosgreSQL
