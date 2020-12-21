@@ -8,3 +8,7 @@ A Content based image retrieval system(CBIR) that searches camera feed from exis
  - Django Framework
  - Django Rest Framework
  - PosgreSQL
+ 
+## Overview
+There are millions of gun parts iamges in PosgreSQL database.
+Users will connect the web camera and search the object of camera feed.
